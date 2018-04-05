@@ -10,7 +10,7 @@
       <option value="200">200mi</option>
     </select>
 
-    <input type="button" onclick="searchLocations()" value="Search"/>
+    <input type="button" onclick="searchLocations()" value="display top-n stores"/>
     </div>
     <div><select id="locationSelect" style="width:100%;visibility:hidden"></select></div>
     <div id="map"></div>
@@ -121,7 +121,8 @@
       Math.sin(dLong / 2) * Math.sin(dLong / 2);
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     var d = R * c;
-    return d/1000000; // returns the distance in meter
+    //return d/1000000; // returns the distance in meter
+    return d;
   };
 
   function searchLocations() {
@@ -147,10 +148,12 @@
         parseFloat(<%=marker.lat%>),
         parseFloat(<%=marker.lng%>));
       var d = getDistance(center,latlng);
-      console.log(d);
-      createOption("<%=marker.name%>", d, i);
-      createMarker(latlng, "<%=marker.name%>", "<%=marker.address%>");
-      bounds.extend(latlng);
+      if (d < 600000) {
+        createOption("<%=marker.name%>", d, i);
+        createMarker(latlng, "<%=marker.name%>", "<%=marker.address%>");
+        bounds.extend(latlng);
+      }
+      
       i++;
     <% end %>
     map.fitBounds(bounds);
